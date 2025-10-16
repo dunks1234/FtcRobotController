@@ -22,7 +22,7 @@ public class ColSenSubsystem{
     }
     public void init(HardwareMap hwMap) {
         colorSensor = hwMap.get(NormalizedColorSensor.class,"ColSen");
-        colorSensor.setGain(5);
+        colorSensor.setGain(5); // adjust tn
     }
 
     public DetectedColor getDetectColor (Telemetry telemetry){
@@ -35,14 +35,14 @@ public class ColSenSubsystem{
 
         /*
         Purple:
-        red =
-        blue =
-        green =
+        red = 0.15
+        blue = 0.16
+        green = 0.21
 
         Green:
-        red =
-        blue =
-        green =
+        red = 0.14
+        blue = 0.15
+        green = 0.22
          */
 
         telemetry.addData("red", normRed);
@@ -53,3 +53,4 @@ public class ColSenSubsystem{
     }
 
 }
+
