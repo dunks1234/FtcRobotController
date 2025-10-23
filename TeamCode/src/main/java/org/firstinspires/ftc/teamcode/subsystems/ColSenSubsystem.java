@@ -1,56 +1,50 @@
 package org.firstinspires.ftc.teamcode.subsystems;
 
 import com.arcrobotics.ftclib.command.SubsystemBase;
+import com.qualcomm.robotcore.hardware.ColorSensor;
+import com.qualcomm.robotcore.hardware.DistanceSensor;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.NormalizedColorSensor;
 import com.qualcomm.robotcore.hardware.NormalizedRGBA;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
+import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 
-public class ColSenSubsystem{
+public class ColSenSubsystem extends SubsystemBase {
+    private ColorSensor colorSensor;
+    private double redLimit;
+    private double greenLimit;
+    private double blueLimit;
 
-    NormalizedColorSensor colorSensor;
-
-    public ColSenSubsystem() {
-
+    public ColSenSubsystem(HardwareMap hardwareMap) {
+        colorSensor = hardwareMap.get(ColorSensor.class, "_____");
     }
 
-    public enum DetectedColor {
-        GREEN,
-        PURPLE,
-        UNKOWN
-    }
-    public void init(HardwareMap hwMap) {
-        colorSensor = hwMap.get(NormalizedColorSensor.class,"ColSen");
-        colorSensor.setGain(5); // adjust tn
+    public int getRed() {
+        return colorSensor.red();
     }
 
-    public DetectedColor getDetectColor (Telemetry telemetry){
-        NormalizedRGBA colors = colorSensor.getNormalizedColors(); // returns 4 values
-
-        float normRed, normGreen, normBlue;
-        normRed = colors.red / colors.alpha;
-        normGreen = colors.green / colors.alpha;
-        normBlue = colors.blue / colors.alpha;
-
-        /*
-        Purple:
-        red = 0.15
-        blue = 0.16
-        green = 0.21
-
-        Green:
-        red = 0.14
-        blue = 0.15
-        green = 0.22
-         */
-
-        telemetry.addData("red", normRed);
-        telemetry.addData("green", normGreen);
-        telemetry.addData("blue", normBlue);
-
-        return DetectedColor.UNKOWN;
+    public int getGreen() {
+        return colorSensor.green();
     }
 
+    public int getBlue() {
+        return colorSensor.blue();
+    }
+
+    public String detectColor() {
+        int red = getRed();
+        int green = getGreen();
+        int blue = getBlue();
+
+        if (red > redLimit && red > green && red > blue) {
+            return "RED";
+        } else if (blue > blueLimit && blue > red && blue > green) {
+            return "BLUE";
+        } else if (green > greenLimit && green > red && green > blue) {
+            return "GREEN";
+        } else {
+            return "UNKNOWN";
+        }
+    }
 }
-

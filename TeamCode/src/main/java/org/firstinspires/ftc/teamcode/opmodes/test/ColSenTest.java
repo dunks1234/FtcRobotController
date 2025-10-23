@@ -6,20 +6,22 @@ import com.qualcomm.robotcore.hardware.ColorSensor;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.NormalizedColorSensor;
 
+import org.firstinspires.ftc.teamcode.commands.ColSenDetectCommand;
 import org.firstinspires.ftc.teamcode.subsystems.ColSenSubsystem;
 @TeleOp
 public class ColSenTest extends OpMode {
-    ColSenSubsystem colsen = new ColSenSubsystem();
+    ColSenSubsystem colSenSubsystem;
+    ColSenDetectCommand colSenDetectCommand;
 
     @Override
     public void init() {
-        colsen.init(hardwareMap);
-
+        colSenSubsystem = new ColSenSubsystem(hardwareMap);
+        colSenDetectCommand = new ColSenDetectCommand(colSenSubsystem);
     }
 
     @Override
     public void loop() {
-        colsen.getDetectColor(telemetry);
-
+        colSenDetectCommand.execute();
+        telemetry.addData(colSenSubsystem.detectColor(), "Colour");
     }
 }
