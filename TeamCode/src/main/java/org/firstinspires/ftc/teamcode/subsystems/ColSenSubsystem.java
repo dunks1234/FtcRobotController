@@ -2,22 +2,17 @@ package org.firstinspires.ftc.teamcode.subsystems;
 
 import com.arcrobotics.ftclib.command.SubsystemBase;
 import com.qualcomm.robotcore.hardware.ColorSensor;
-import com.qualcomm.robotcore.hardware.DistanceSensor;
 import com.qualcomm.robotcore.hardware.HardwareMap;
-import com.qualcomm.robotcore.hardware.NormalizedColorSensor;
-import com.qualcomm.robotcore.hardware.NormalizedRGBA;
-
-import org.firstinspires.ftc.robotcore.external.Telemetry;
-import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 
 public class ColSenSubsystem extends SubsystemBase {
-    private ColorSensor colorSensor;
-    private double redLimit;
-    private double greenLimit;
-    private double blueLimit;
+    private final ColorSensor colorSensor;
+
+    // Thresholds you can tune later based on your sensor readings
+    private final double greenLimit = 90;   // adjust experimentally
+    private final double purpleLimit = 10;  // adjust experimentally
 
     public ColSenSubsystem(HardwareMap hardwareMap) {
-        colorSensor = hardwareMap.get(ColorSensor.class, "_____");
+        colorSensor = hardwareMap.get(ColorSensor.class, "ColSen");
     }
 
     public int getRed() {
@@ -37,14 +32,18 @@ public class ColSenSubsystem extends SubsystemBase {
         int green = getGreen();
         int blue = getBlue();
 
-        if (red > redLimit && red > green && red > blue) {
-            return "RED";
-        } else if (blue > blueLimit && blue > red && blue > green) {
-            return "BLUE";
-        } else if (green > greenLimit && green > red && green > blue) {
+        // --- Detect GREEN ---
+        // Green is dominant and above a certain brightness
+        if (green > greenLimit && green > red * 1.3 && green > blue * 1.3) {
             return "GREEN";
-        } else {
-            return "UNKNOWN";
         }
+
+        // --- Detect PURPLE ---
+        // Purple is a mix of RED + BLUE, both strong and green is weaker
+        if (red > purpleLimit && blue > purpleLimit && green < (red + blue) * 0.6) {
+            return "PURPLE";
+        }
+
+        return "UNKNOWN";
     }
 }
