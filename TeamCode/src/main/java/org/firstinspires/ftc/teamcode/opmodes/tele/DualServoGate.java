@@ -18,12 +18,12 @@ public class DualServoGate extends LinearOpMode {
         waitForStart();
 
         while (opModeIsActive()) {
-            if (gamepad1.b) {
+            if (gamepad1.y) {
                 servo1.setPower(1.0);
                 servo2.setPower(1.0);
             }
 
-            if (gamepad1.a) {
+            if (gamepad1.b) {
                 servo1.setPower(0);
                 servo2.setPower(0);
             }
